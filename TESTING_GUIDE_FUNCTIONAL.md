@@ -310,6 +310,152 @@ Content-Type: application/json
 - ✅ New refresh token is returned
 - ✅ Old refresh token is invalidated
 
+### Test Case 4.6: Registration with CAPTCHA Enabled
+
+```bash
+# Step 1: Enable CAPTCHA for project
+PATCH {{baseUrl}}/api/projects/{{projectId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "auth": {
+    "captcha": {
+      "enabled": true,
+      "version": "v3",
+      "siteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+      "secretKey": "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuTjHjifI9tT",
+      "minScore": 0.5
+    }
+  }
+}
+
+# Expected Response: 200 OK
+
+# Step 2: Attempt registration without CAPTCHA token
+POST {{baseUrl}}/api/auth/local/register
+Content-Type: application/json
+
+{
+  "email": "captcha-test@example.com",
+  "password": "TestPassword123!",
+  "firstName": "Test",
+  "lastName": "User",
+  "projectId": "{{projectId}}"
+}
+
+# Expected Response: 400 Bad Request
+# {
+#   "error": "CAPTCHA verification required",
+#   "captchaRequired": true,
+#   "siteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+# }
+
+# Step 3: Register with valid CAPTCHA token
+POST {{baseUrl}}/api/auth/local/register
+Content-Type: application/json
+
+{
+  "email": "captcha-test@example.com",
+  "password": "TestPassword123!",
+  "firstName": "Test",
+  "lastName": "User",
+  "projectId": "{{projectId}}",
+  "captcha": "03AGdBq24PjFyF8Z..." // Valid CAPTCHA token from frontend
+}
+
+# Expected Response: 201 Created
+```
+
+**Validation**:
+- ✅ CAPTCHA is required when enabled
+- ✅ Registration fails without CAPTCHA token
+- ✅ Site key is returned for frontend integration
+- ✅ Registration succeeds with valid CAPTCHA token
+- ✅ Invalid CAPTCHA token is rejected
+
+### Test Case 4.7: Login with CAPTCHA Enabled
+
+```bash
+POST {{baseUrl}}/api/auth/local/login
+Content-Type: application/json
+
+{
+  "email": "captcha-test@example.com",
+  "password": "TestPassword123!",
+  "projectId": "{{projectId}}",
+  "captcha": "03AGdBq24PjFyF8Z..." // Valid CAPTCHA token
+}
+
+# Expected Response: 200 OK (if CAPTCHA valid)
+```
+
+**Validation**:
+- ✅ Login requires CAPTCHA when enabled
+- ✅ Login succeeds with valid CAPTCHA
+- ✅ Login fails with invalid/missing CAPTCHA
+
+### Test Case 4.8: Get CAPTCHA Configuration
+
+```bash
+GET {{baseUrl}}/api/projects/{{projectId}}/auth/captcha
+
+# Expected Response: 200 OK
+# {
+#   "captcha": {
+#     "enabled": true,
+#     "version": "v3",
+#     "siteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+#     "minScore": 0.5
+#   }
+# }
+```
+
+**Validation**:
+- ✅ Configuration is returned correctly
+- ✅ Site key is included (for frontend)
+- ✅ Secret key is NOT included (security)
+- ✅ Works without authentication (public endpoint)
+
+### Test Case 4.9: Disable CAPTCHA
+
+```bash
+# Disable CAPTCHA
+PATCH {{baseUrl}}/api/projects/{{projectId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "auth": {
+    "captcha": {
+      "enabled": false
+    }
+  }
+}
+
+# Expected Response: 200 OK
+
+# Register without CAPTCHA (should work)
+POST {{baseUrl}}/api/auth/local/register
+Content-Type: application/json
+
+{
+  "email": "no-captcha-test@example.com",
+  "password": "TestPassword123!",
+  "firstName": "Test",
+  "lastName": "User",
+  "projectId": "{{projectId}}"
+  // No captcha field
+}
+
+# Expected Response: 201 Created
+```
+
+**Validation**:
+- ✅ CAPTCHA can be disabled
+- ✅ Registration works without CAPTCHA when disabled
+- ✅ Login works without CAPTCHA when disabled
+
 ---
 
 ## Multi-Role Feature Testing
@@ -1374,6 +1520,10 @@ Use this checklist to ensure all functionalities are tested:
 - [ ] Token refresh
 - [ ] Role-based signup (customer, vendor, rider)
 - [ ] OAuth authentication (if configured)
+- [ ] CAPTCHA-enabled registration (when enabled)
+- [ ] CAPTCHA-enabled login (when enabled)
+- [ ] Get CAPTCHA configuration
+- [ ] Enable/disable CAPTCHA per project
 
 ### Multi-Role Feature
 - [ ] Initialize multi-role feature
@@ -1461,6 +1611,6 @@ After completing functional testing, proceed to:
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: December 2025  
 **Version**: 1.0.0
 
