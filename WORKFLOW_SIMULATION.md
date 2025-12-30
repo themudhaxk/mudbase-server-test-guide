@@ -1,11 +1,11 @@
 # MUDBASE Backend-as-a-Service: Complete Workflow Simulation
 
-> **📅 Last Updated**: December 2024  
-> **✨ NEW FEATURES**: See [NEW_FEATURES_WORKFLOWS.md](./NEW_FEATURES_WORKFLOWS.md) for complete documentation of 24+ new features added in December 2024!
+> **📅 Last Updated**: December 2025  
+> **✨ NEW FEATURES**: See [NEW_FEATURES_WORKFLOWS.md](./NEW_FEATURES_WORKFLOWS.md) for complete documentation of 24+ new features added in December 2025!
 
 ## Quick Links
 
-- **🆕 [New Features Documentation](./NEW_FEATURES_WORKFLOWS.md)** - All December 2024 features
+- **🆕 [New Features Documentation](./NEW_FEATURES_WORKFLOWS.md)** - All December 2025 features
 - **🎯 [RBAC Guide](./RBAC_GUIDE.md)** - Multi-role & custom permissions (E-commerce, Delivery Apps, SaaS)
 - **📊 [Competitive Comparison](./COMPETITIVE_COMPARISON.md)** - Updated platform scores
 - **📋 [Completion Report](./COMPLETION_REPORT.md)** - Comprehensive improvement summary
@@ -222,10 +222,13 @@ Content-Type: application/json
 
 These endpoints are for project-level authentication and require a projectId.
 
+**🆕 NEW: CAPTCHA Support** - Projects can enable CAPTCHA verification for registration and login to protect against bots. See [CAPTCHA Setup Guide](./CAPTCHA_SETUP_GUIDE.md) for configuration.
+
 #### Registration Flow
 
 ```javascript
 // Step 1: User Registration
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/register
 Content-Type: application/json
 
@@ -234,7 +237,8 @@ Content-Type: application/json
   "password": "[USER_PASSWORD]",
   "firstName": "John",
   "lastName": "Doe",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -269,13 +273,15 @@ Content-Type: application/json
 }
 
 // Step 3: Login
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/login
 Content-Type: application/json
 
 {
   "email": "john.doe@example.com",
   "password": "[USER_PASSWORD]",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -622,7 +628,7 @@ Content-Type: application/json
     "name": "Acme Corporation",
     "slug": "acme-corp",
     "members": ["507f1f77bcf86cd799439012"],
-    "createdAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z"
   }
 }
 
@@ -884,8 +890,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": true,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -916,8 +922,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": false,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -941,7 +947,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": true,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439016",
@@ -951,7 +957,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": false,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     }
   ]
 }
@@ -978,7 +984,7 @@ Authorization: Bearer {user_token}
   },
   "warning": "Keep this private key secure and never share it. Anyone with access to this key can control your wallet.",
   "security": {
-    "accessedAt": "2024-01-15T11:20:00Z",
+    "accessedAt": "2025-01-15T11:20:00Z",
     "accessedBy": "507f1f77bcf86cd799439012"
   }
 }
@@ -1005,7 +1011,7 @@ Authorization: Bearer {user_token}
     "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     "balance": "0.05",
     "balanceInUSD": 2500.00,
-    "lastSyncedAt": "2024-01-15T10:30:00Z"
+    "lastSyncedAt": "2025-01-15T10:30:00Z"
   }
 }
 ```
@@ -1056,7 +1062,7 @@ Authorization: Bearer {user_token}
     "mainTxStatus": "pending",
     "mainTxHash": null,
     "platformFee": 0.0005,
-    "createdAt": "2024-01-15T10:35:00Z"
+    "createdAt": "2025-01-15T10:35:00Z"
   }
 }
 
@@ -1072,7 +1078,7 @@ Authorization: Bearer {user_token}
     "refundStatus": "confirmed",
     "networkFee": 0.0001,
     "platformFee": 0.0005,
-    "completedAt": "2024-01-15T10:45:00Z"
+    "completedAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -1192,7 +1198,7 @@ Content-Type: application/json
     "provider": "paystack",
     "status": "pending",
     "publicKey": "pk_test_abc123...",
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 
@@ -1294,7 +1300,7 @@ Content-Type: application/json
       }
     ],
     "isActive": true,
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 ```
@@ -1381,7 +1387,7 @@ Content-Type: application/json
         "name": "Pro Plan"
       },
       "customerEmail": "customer@example.com",
-      "currentPeriodEnd": "2024-02-15T10:45:00Z",
+      "currentPeriodEnd": "2025-02-15T10:45:00Z",
       "billingCycle": "monthly"
     }
   }
@@ -1407,9 +1413,9 @@ GET /api/billing/public/projects/507f1f77bcf86cd799439011/subscription?email=cus
       "currency": "NGN"
     },
     "customerEmail": "customer@example.com",
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
     "billingCycle": "monthly",
-    "createdAt": "2024-01-15T10:45:00Z"
+    "createdAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -1474,8 +1480,8 @@ Content-Type: application/json
     "_id": "507f1f77bcf86cd799439019",
     "status": "active",
     "cancelAtPeriodEnd": true,
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
-    "canceledAt": "2024-01-15T11:00:00Z"
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
+    "canceledAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -1603,7 +1609,7 @@ Content-Type: application/json
         "default": true
       }
     ],
-    "createdAt": "2024-01-15T10:50:00Z"
+    "createdAt": "2025-01-15T10:50:00Z"
   }
 }
 ```
@@ -1634,8 +1640,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": true,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T10:55:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T10:55:00Z"
   }
 }
 ```
@@ -1657,7 +1663,7 @@ Authorization: Bearer {user_token}
       "description": "High-performance laptop",
       "category": "electronics",
       "inStock": true,
-      "createdAt": "2024-01-15T10:55:00Z"
+      "createdAt": "2025-01-15T10:55:00Z"
     }
   ],
   "pagination": {
@@ -1710,8 +1716,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": false,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T11:00:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -1764,17 +1770,17 @@ Content-Type: application/json
       {
         "user": "507f1f77bcf86cd799439012",
         "role": "admin",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       },
       {
         "user": "507f1f77bcf86cd799439022",
         "role": "member",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       }
     ],
     "createdBy": "507f1f77bcf86cd799439012",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:05:00Z"
+    "createdAt": "2025-01-15T11:05:00Z"
   }
 }
 ```
@@ -1802,8 +1808,8 @@ Content-Type: application/json
     "sender": "507f1f77bcf86cd799439012",
     "chat": "507f1f77bcf86cd799439023",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:06:00Z",
-    "updatedAt": "2024-01-15T11:06:00Z"
+    "createdAt": "2025-01-15T11:06:00Z",
+    "updatedAt": "2025-01-15T11:06:00Z"
   }
 }
 ```
@@ -1841,7 +1847,7 @@ socket.on('chat:message:new', (data) => {
   //     _id: '507f1f77bcf86cd799439025',
   //     content: 'Hello from real-time!',
   //     sender: { ... },
-  //     createdAt: '2024-01-15T11:07:00Z'
+  //     createdAt: '2025-01-15T11:07:00Z'
   //   },
   //   chatId: '507f1f77bcf86cd799439023'
   // }
@@ -1962,8 +1968,8 @@ Content-Type: application/json
     "settings": {
       "isActive": true
     },
-    "createdAt": "2024-01-15T11:10:00Z",
-    "updatedAt": "2024-01-15T11:10:00Z"
+    "createdAt": "2025-01-15T11:10:00Z",
+    "updatedAt": "2025-01-15T11:10:00Z"
   }
 }
 ```
@@ -1995,7 +2001,7 @@ Content-Type: application/json
     "data": {
       "id": "1234567890",
       "text": "Hello from MUDBASE!",
-      "created_at": "2024-01-15T11:12:00Z"
+      "created_at": "2025-01-15T11:12:00Z"
     },
     "headers": {
       "content-type": "application/json",
@@ -2004,7 +2010,7 @@ Content-Type: application/json
   },
   "usage": {
     "apiCalls": 1,
-    "timestamp": "2024-01-15T11:12:00Z"
+    "timestamp": "2025-01-15T11:12:00Z"
   }
 }
 ```
@@ -2026,7 +2032,7 @@ Authorization: Bearer {user_token}
     "period": "month",
     "breakdown": [
       {
-        "date": "2024-01-15",
+        "date": "2025-01-15",
         "calls": 45,
         "successful": 43,
         "failed": 2
@@ -2529,7 +2535,7 @@ Content-Type: application/json
   "message": "Address verified successfully",
   "data": {
     "verified": true,
-    "verifiedAt": "2024-01-15T12:00:00Z"
+    "verifiedAt": "2025-01-15T12:00:00Z"
   }
 }
 ```
@@ -2576,7 +2582,7 @@ Authorization: Bearer {user_token}
         "collectedAmount": 0.002,
         "threshold": 0.001,
         "status": "ready",
-        "nextScheduledPayoutDate": "2024-01-17T02:00:00Z"
+        "nextScheduledPayoutDate": "2025-01-17T02:00:00Z"
       }
     ]
   }
@@ -2604,10 +2610,10 @@ Authorization: Bearer {user_token}
         "toAddress": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
         "txHash": "abc123def456...",
         "status": "completed",
-        "scheduledAt": "2024-01-15T02:00:00Z",
-        "processedAt": "2024-01-15T02:05:00Z",
-        "confirmedAt": "2024-01-15T02:45:00Z",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "scheduledAt": "2025-01-15T02:00:00Z",
+        "processedAt": "2025-01-15T02:05:00Z",
+        "confirmedAt": "2025-01-15T02:45:00Z",
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "total": 1,
@@ -2680,7 +2686,7 @@ Authorization: Bearer {user_token}
         "currency": "BTC",
         "netAmount": 0.0009,
         "status": "completed",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "totalEarned": 0.0009
@@ -2891,10 +2897,13 @@ Content-Type: application/json
 
 These endpoints are for project-level authentication and require a projectId.
 
+**🆕 NEW: CAPTCHA Support** - Projects can enable CAPTCHA verification for registration and login to protect against bots. See [CAPTCHA Setup Guide](./CAPTCHA_SETUP_GUIDE.md) for configuration.
+
 #### Registration Flow
 
 ```javascript
 // Step 1: User Registration
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/register
 Content-Type: application/json
 
@@ -2903,7 +2912,8 @@ Content-Type: application/json
   "password": "[USER_PASSWORD]",
   "firstName": "John",
   "lastName": "Doe",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -2938,13 +2948,15 @@ Content-Type: application/json
 }
 
 // Step 3: Login
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/login
 Content-Type: application/json
 
 {
   "email": "john.doe@example.com",
   "password": "[USER_PASSWORD]",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -3291,7 +3303,7 @@ Content-Type: application/json
     "name": "Acme Corporation",
     "slug": "acme-corp",
     "members": ["507f1f77bcf86cd799439012"],
-    "createdAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z"
   }
 }
 
@@ -3553,8 +3565,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": true,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -3585,8 +3597,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": false,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -3610,7 +3622,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": true,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439016",
@@ -3620,7 +3632,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": false,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     }
   ]
 }
@@ -3647,7 +3659,7 @@ Authorization: Bearer {user_token}
   },
   "warning": "Keep this private key secure and never share it. Anyone with access to this key can control your wallet.",
   "security": {
-    "accessedAt": "2024-01-15T11:20:00Z",
+    "accessedAt": "2025-01-15T11:20:00Z",
     "accessedBy": "507f1f77bcf86cd799439012"
   }
 }
@@ -3674,7 +3686,7 @@ Authorization: Bearer {user_token}
     "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     "balance": "0.05",
     "balanceInUSD": 2500.00,
-    "lastSyncedAt": "2024-01-15T10:30:00Z"
+    "lastSyncedAt": "2025-01-15T10:30:00Z"
   }
 }
 ```
@@ -3725,7 +3737,7 @@ Authorization: Bearer {user_token}
     "mainTxStatus": "pending",
     "mainTxHash": null,
     "platformFee": 0.0005,
-    "createdAt": "2024-01-15T10:35:00Z"
+    "createdAt": "2025-01-15T10:35:00Z"
   }
 }
 
@@ -3741,7 +3753,7 @@ Authorization: Bearer {user_token}
     "refundStatus": "confirmed",
     "networkFee": 0.0001,
     "platformFee": 0.0005,
-    "completedAt": "2024-01-15T10:45:00Z"
+    "completedAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -3861,7 +3873,7 @@ Content-Type: application/json
     "provider": "paystack",
     "status": "pending",
     "publicKey": "pk_test_abc123...",
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 
@@ -3963,7 +3975,7 @@ Content-Type: application/json
       }
     ],
     "isActive": true,
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 ```
@@ -4050,7 +4062,7 @@ Content-Type: application/json
         "name": "Pro Plan"
       },
       "customerEmail": "customer@example.com",
-      "currentPeriodEnd": "2024-02-15T10:45:00Z",
+      "currentPeriodEnd": "2025-02-15T10:45:00Z",
       "billingCycle": "monthly"
     }
   }
@@ -4076,9 +4088,9 @@ GET /api/billing/public/projects/507f1f77bcf86cd799439011/subscription?email=cus
       "currency": "NGN"
     },
     "customerEmail": "customer@example.com",
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
     "billingCycle": "monthly",
-    "createdAt": "2024-01-15T10:45:00Z"
+    "createdAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -4143,8 +4155,8 @@ Content-Type: application/json
     "_id": "507f1f77bcf86cd799439019",
     "status": "active",
     "cancelAtPeriodEnd": true,
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
-    "canceledAt": "2024-01-15T11:00:00Z"
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
+    "canceledAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -4272,7 +4284,7 @@ Content-Type: application/json
         "default": true
       }
     ],
-    "createdAt": "2024-01-15T10:50:00Z"
+    "createdAt": "2025-01-15T10:50:00Z"
   }
 }
 ```
@@ -4303,8 +4315,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": true,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T10:55:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T10:55:00Z"
   }
 }
 ```
@@ -4326,7 +4338,7 @@ Authorization: Bearer {user_token}
       "description": "High-performance laptop",
       "category": "electronics",
       "inStock": true,
-      "createdAt": "2024-01-15T10:55:00Z"
+      "createdAt": "2025-01-15T10:55:00Z"
     }
   ],
   "pagination": {
@@ -4379,8 +4391,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": false,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T11:00:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -4433,17 +4445,17 @@ Content-Type: application/json
       {
         "user": "507f1f77bcf86cd799439012",
         "role": "admin",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       },
       {
         "user": "507f1f77bcf86cd799439022",
         "role": "member",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       }
     ],
     "createdBy": "507f1f77bcf86cd799439012",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:05:00Z"
+    "createdAt": "2025-01-15T11:05:00Z"
   }
 }
 ```
@@ -4471,8 +4483,8 @@ Content-Type: application/json
     "sender": "507f1f77bcf86cd799439012",
     "chat": "507f1f77bcf86cd799439023",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:06:00Z",
-    "updatedAt": "2024-01-15T11:06:00Z"
+    "createdAt": "2025-01-15T11:06:00Z",
+    "updatedAt": "2025-01-15T11:06:00Z"
   }
 }
 ```
@@ -4510,7 +4522,7 @@ socket.on('chat:message:new', (data) => {
   //     _id: '507f1f77bcf86cd799439025',
   //     content: 'Hello from real-time!',
   //     sender: { ... },
-  //     createdAt: '2024-01-15T11:07:00Z'
+  //     createdAt: '2025-01-15T11:07:00Z'
   //   },
   //   chatId: '507f1f77bcf86cd799439023'
   // }
@@ -4631,8 +4643,8 @@ Content-Type: application/json
     "settings": {
       "isActive": true
     },
-    "createdAt": "2024-01-15T11:10:00Z",
-    "updatedAt": "2024-01-15T11:10:00Z"
+    "createdAt": "2025-01-15T11:10:00Z",
+    "updatedAt": "2025-01-15T11:10:00Z"
   }
 }
 ```
@@ -4664,7 +4676,7 @@ Content-Type: application/json
     "data": {
       "id": "1234567890",
       "text": "Hello from MUDBASE!",
-      "created_at": "2024-01-15T11:12:00Z"
+      "created_at": "2025-01-15T11:12:00Z"
     },
     "headers": {
       "content-type": "application/json",
@@ -4673,7 +4685,7 @@ Content-Type: application/json
   },
   "usage": {
     "apiCalls": 1,
-    "timestamp": "2024-01-15T11:12:00Z"
+    "timestamp": "2025-01-15T11:12:00Z"
   }
 }
 ```
@@ -4695,7 +4707,7 @@ Authorization: Bearer {user_token}
     "period": "month",
     "breakdown": [
       {
-        "date": "2024-01-15",
+        "date": "2025-01-15",
         "calls": 45,
         "successful": 43,
         "failed": 2
@@ -5198,7 +5210,7 @@ Content-Type: application/json
   "message": "Address verified successfully",
   "data": {
     "verified": true,
-    "verifiedAt": "2024-01-15T12:00:00Z"
+    "verifiedAt": "2025-01-15T12:00:00Z"
   }
 }
 ```
@@ -5245,7 +5257,7 @@ Authorization: Bearer {user_token}
         "collectedAmount": 0.002,
         "threshold": 0.001,
         "status": "ready",
-        "nextScheduledPayoutDate": "2024-01-17T02:00:00Z"
+        "nextScheduledPayoutDate": "2025-01-17T02:00:00Z"
       }
     ]
   }
@@ -5273,10 +5285,10 @@ Authorization: Bearer {user_token}
         "toAddress": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
         "txHash": "abc123def456...",
         "status": "completed",
-        "scheduledAt": "2024-01-15T02:00:00Z",
-        "processedAt": "2024-01-15T02:05:00Z",
-        "confirmedAt": "2024-01-15T02:45:00Z",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "scheduledAt": "2025-01-15T02:00:00Z",
+        "processedAt": "2025-01-15T02:05:00Z",
+        "confirmedAt": "2025-01-15T02:45:00Z",
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "total": 1,
@@ -5349,7 +5361,7 @@ Authorization: Bearer {user_token}
         "currency": "BTC",
         "netAmount": 0.0009,
         "status": "completed",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "totalEarned": 0.0009
@@ -5560,10 +5572,13 @@ Content-Type: application/json
 
 These endpoints are for project-level authentication and require a projectId.
 
+**🆕 NEW: CAPTCHA Support** - Projects can enable CAPTCHA verification for registration and login to protect against bots. See [CAPTCHA Setup Guide](./CAPTCHA_SETUP_GUIDE.md) for configuration.
+
 #### Registration Flow
 
 ```javascript
 // Step 1: User Registration
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/register
 Content-Type: application/json
 
@@ -5572,7 +5587,8 @@ Content-Type: application/json
   "password": "[USER_PASSWORD]",
   "firstName": "John",
   "lastName": "Doe",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -5607,13 +5623,15 @@ Content-Type: application/json
 }
 
 // Step 3: Login
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/login
 Content-Type: application/json
 
 {
   "email": "john.doe@example.com",
   "password": "[USER_PASSWORD]",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -5960,7 +5978,7 @@ Content-Type: application/json
     "name": "Acme Corporation",
     "slug": "acme-corp",
     "members": ["507f1f77bcf86cd799439012"],
-    "createdAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z"
   }
 }
 
@@ -6222,8 +6240,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": true,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -6254,8 +6272,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": false,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -6279,7 +6297,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": true,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439016",
@@ -6289,7 +6307,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": false,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     }
   ]
 }
@@ -6316,7 +6334,7 @@ Authorization: Bearer {user_token}
   },
   "warning": "Keep this private key secure and never share it. Anyone with access to this key can control your wallet.",
   "security": {
-    "accessedAt": "2024-01-15T11:20:00Z",
+    "accessedAt": "2025-01-15T11:20:00Z",
     "accessedBy": "507f1f77bcf86cd799439012"
   }
 }
@@ -6343,7 +6361,7 @@ Authorization: Bearer {user_token}
     "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     "balance": "0.05",
     "balanceInUSD": 2500.00,
-    "lastSyncedAt": "2024-01-15T10:30:00Z"
+    "lastSyncedAt": "2025-01-15T10:30:00Z"
   }
 }
 ```
@@ -6394,7 +6412,7 @@ Authorization: Bearer {user_token}
     "mainTxStatus": "pending",
     "mainTxHash": null,
     "platformFee": 0.0005,
-    "createdAt": "2024-01-15T10:35:00Z"
+    "createdAt": "2025-01-15T10:35:00Z"
   }
 }
 
@@ -6410,7 +6428,7 @@ Authorization: Bearer {user_token}
     "refundStatus": "confirmed",
     "networkFee": 0.0001,
     "platformFee": 0.0005,
-    "completedAt": "2024-01-15T10:45:00Z"
+    "completedAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -6530,7 +6548,7 @@ Content-Type: application/json
     "provider": "paystack",
     "status": "pending",
     "publicKey": "pk_test_abc123...",
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 
@@ -6632,7 +6650,7 @@ Content-Type: application/json
       }
     ],
     "isActive": true,
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 ```
@@ -6719,7 +6737,7 @@ Content-Type: application/json
         "name": "Pro Plan"
       },
       "customerEmail": "customer@example.com",
-      "currentPeriodEnd": "2024-02-15T10:45:00Z",
+      "currentPeriodEnd": "2025-02-15T10:45:00Z",
       "billingCycle": "monthly"
     }
   }
@@ -6745,9 +6763,9 @@ GET /api/billing/public/projects/507f1f77bcf86cd799439011/subscription?email=cus
       "currency": "NGN"
     },
     "customerEmail": "customer@example.com",
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
     "billingCycle": "monthly",
-    "createdAt": "2024-01-15T10:45:00Z"
+    "createdAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -6812,8 +6830,8 @@ Content-Type: application/json
     "_id": "507f1f77bcf86cd799439019",
     "status": "active",
     "cancelAtPeriodEnd": true,
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
-    "canceledAt": "2024-01-15T11:00:00Z"
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
+    "canceledAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -6941,7 +6959,7 @@ Content-Type: application/json
         "default": true
       }
     ],
-    "createdAt": "2024-01-15T10:50:00Z"
+    "createdAt": "2025-01-15T10:50:00Z"
   }
 }
 ```
@@ -6972,8 +6990,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": true,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T10:55:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T10:55:00Z"
   }
 }
 ```
@@ -6995,7 +7013,7 @@ Authorization: Bearer {user_token}
       "description": "High-performance laptop",
       "category": "electronics",
       "inStock": true,
-      "createdAt": "2024-01-15T10:55:00Z"
+      "createdAt": "2025-01-15T10:55:00Z"
     }
   ],
   "pagination": {
@@ -7048,8 +7066,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": false,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T11:00:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -7102,17 +7120,17 @@ Content-Type: application/json
       {
         "user": "507f1f77bcf86cd799439012",
         "role": "admin",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       },
       {
         "user": "507f1f77bcf86cd799439022",
         "role": "member",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       }
     ],
     "createdBy": "507f1f77bcf86cd799439012",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:05:00Z"
+    "createdAt": "2025-01-15T11:05:00Z"
   }
 }
 ```
@@ -7140,8 +7158,8 @@ Content-Type: application/json
     "sender": "507f1f77bcf86cd799439012",
     "chat": "507f1f77bcf86cd799439023",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:06:00Z",
-    "updatedAt": "2024-01-15T11:06:00Z"
+    "createdAt": "2025-01-15T11:06:00Z",
+    "updatedAt": "2025-01-15T11:06:00Z"
   }
 }
 ```
@@ -7179,7 +7197,7 @@ socket.on('chat:message:new', (data) => {
   //     _id: '507f1f77bcf86cd799439025',
   //     content: 'Hello from real-time!',
   //     sender: { ... },
-  //     createdAt: '2024-01-15T11:07:00Z'
+  //     createdAt: '2025-01-15T11:07:00Z'
   //   },
   //   chatId: '507f1f77bcf86cd799439023'
   // }
@@ -7300,8 +7318,8 @@ Content-Type: application/json
     "settings": {
       "isActive": true
     },
-    "createdAt": "2024-01-15T11:10:00Z",
-    "updatedAt": "2024-01-15T11:10:00Z"
+    "createdAt": "2025-01-15T11:10:00Z",
+    "updatedAt": "2025-01-15T11:10:00Z"
   }
 }
 ```
@@ -7333,7 +7351,7 @@ Content-Type: application/json
     "data": {
       "id": "1234567890",
       "text": "Hello from MUDBASE!",
-      "created_at": "2024-01-15T11:12:00Z"
+      "created_at": "2025-01-15T11:12:00Z"
     },
     "headers": {
       "content-type": "application/json",
@@ -7342,7 +7360,7 @@ Content-Type: application/json
   },
   "usage": {
     "apiCalls": 1,
-    "timestamp": "2024-01-15T11:12:00Z"
+    "timestamp": "2025-01-15T11:12:00Z"
   }
 }
 ```
@@ -7364,7 +7382,7 @@ Authorization: Bearer {user_token}
     "period": "month",
     "breakdown": [
       {
-        "date": "2024-01-15",
+        "date": "2025-01-15",
         "calls": 45,
         "successful": 43,
         "failed": 2
@@ -7867,7 +7885,7 @@ Content-Type: application/json
   "message": "Address verified successfully",
   "data": {
     "verified": true,
-    "verifiedAt": "2024-01-15T12:00:00Z"
+    "verifiedAt": "2025-01-15T12:00:00Z"
   }
 }
 ```
@@ -7914,7 +7932,7 @@ Authorization: Bearer {user_token}
         "collectedAmount": 0.002,
         "threshold": 0.001,
         "status": "ready",
-        "nextScheduledPayoutDate": "2024-01-17T02:00:00Z"
+        "nextScheduledPayoutDate": "2025-01-17T02:00:00Z"
       }
     ]
   }
@@ -7942,10 +7960,10 @@ Authorization: Bearer {user_token}
         "toAddress": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
         "txHash": "abc123def456...",
         "status": "completed",
-        "scheduledAt": "2024-01-15T02:00:00Z",
-        "processedAt": "2024-01-15T02:05:00Z",
-        "confirmedAt": "2024-01-15T02:45:00Z",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "scheduledAt": "2025-01-15T02:00:00Z",
+        "processedAt": "2025-01-15T02:05:00Z",
+        "confirmedAt": "2025-01-15T02:45:00Z",
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "total": 1,
@@ -8018,7 +8036,7 @@ Authorization: Bearer {user_token}
         "currency": "BTC",
         "netAmount": 0.0009,
         "status": "completed",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "totalEarned": 0.0009
@@ -8229,10 +8247,13 @@ Content-Type: application/json
 
 These endpoints are for project-level authentication and require a projectId.
 
+**🆕 NEW: CAPTCHA Support** - Projects can enable CAPTCHA verification for registration and login to protect against bots. See [CAPTCHA Setup Guide](./CAPTCHA_SETUP_GUIDE.md) for configuration.
+
 #### Registration Flow
 
 ```javascript
 // Step 1: User Registration
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/register
 Content-Type: application/json
 
@@ -8241,7 +8262,8 @@ Content-Type: application/json
   "password": "[USER_PASSWORD]",
   "firstName": "John",
   "lastName": "Doe",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -8276,13 +8298,15 @@ Content-Type: application/json
 }
 
 // Step 3: Login
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/login
 Content-Type: application/json
 
 {
   "email": "john.doe@example.com",
   "password": "[USER_PASSWORD]",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -8629,7 +8653,7 @@ Content-Type: application/json
     "name": "Acme Corporation",
     "slug": "acme-corp",
     "members": ["507f1f77bcf86cd799439012"],
-    "createdAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z"
   }
 }
 
@@ -8891,8 +8915,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": true,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -8923,8 +8947,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": false,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -8948,7 +8972,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": true,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439016",
@@ -8958,7 +8982,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": false,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     }
   ]
 }
@@ -8985,7 +9009,7 @@ Authorization: Bearer {user_token}
   },
   "warning": "Keep this private key secure and never share it. Anyone with access to this key can control your wallet.",
   "security": {
-    "accessedAt": "2024-01-15T11:20:00Z",
+    "accessedAt": "2025-01-15T11:20:00Z",
     "accessedBy": "507f1f77bcf86cd799439012"
   }
 }
@@ -9012,7 +9036,7 @@ Authorization: Bearer {user_token}
     "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     "balance": "0.05",
     "balanceInUSD": 2500.00,
-    "lastSyncedAt": "2024-01-15T10:30:00Z"
+    "lastSyncedAt": "2025-01-15T10:30:00Z"
   }
 }
 ```
@@ -9063,7 +9087,7 @@ Authorization: Bearer {user_token}
     "mainTxStatus": "pending",
     "mainTxHash": null,
     "platformFee": 0.0005,
-    "createdAt": "2024-01-15T10:35:00Z"
+    "createdAt": "2025-01-15T10:35:00Z"
   }
 }
 
@@ -9079,7 +9103,7 @@ Authorization: Bearer {user_token}
     "refundStatus": "confirmed",
     "networkFee": 0.0001,
     "platformFee": 0.0005,
-    "completedAt": "2024-01-15T10:45:00Z"
+    "completedAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -9199,7 +9223,7 @@ Content-Type: application/json
     "provider": "paystack",
     "status": "pending",
     "publicKey": "pk_test_abc123...",
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 
@@ -9301,7 +9325,7 @@ Content-Type: application/json
       }
     ],
     "isActive": true,
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 ```
@@ -9388,7 +9412,7 @@ Content-Type: application/json
         "name": "Pro Plan"
       },
       "customerEmail": "customer@example.com",
-      "currentPeriodEnd": "2024-02-15T10:45:00Z",
+      "currentPeriodEnd": "2025-02-15T10:45:00Z",
       "billingCycle": "monthly"
     }
   }
@@ -9414,9 +9438,9 @@ GET /api/billing/public/projects/507f1f77bcf86cd799439011/subscription?email=cus
       "currency": "NGN"
     },
     "customerEmail": "customer@example.com",
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
     "billingCycle": "monthly",
-    "createdAt": "2024-01-15T10:45:00Z"
+    "createdAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -9481,8 +9505,8 @@ Content-Type: application/json
     "_id": "507f1f77bcf86cd799439019",
     "status": "active",
     "cancelAtPeriodEnd": true,
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
-    "canceledAt": "2024-01-15T11:00:00Z"
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
+    "canceledAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -9610,7 +9634,7 @@ Content-Type: application/json
         "default": true
       }
     ],
-    "createdAt": "2024-01-15T10:50:00Z"
+    "createdAt": "2025-01-15T10:50:00Z"
   }
 }
 ```
@@ -9641,8 +9665,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": true,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T10:55:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T10:55:00Z"
   }
 }
 ```
@@ -9664,7 +9688,7 @@ Authorization: Bearer {user_token}
       "description": "High-performance laptop",
       "category": "electronics",
       "inStock": true,
-      "createdAt": "2024-01-15T10:55:00Z"
+      "createdAt": "2025-01-15T10:55:00Z"
     }
   ],
   "pagination": {
@@ -9717,8 +9741,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": false,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T11:00:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -9771,17 +9795,17 @@ Content-Type: application/json
       {
         "user": "507f1f77bcf86cd799439012",
         "role": "admin",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       },
       {
         "user": "507f1f77bcf86cd799439022",
         "role": "member",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       }
     ],
     "createdBy": "507f1f77bcf86cd799439012",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:05:00Z"
+    "createdAt": "2025-01-15T11:05:00Z"
   }
 }
 ```
@@ -9809,8 +9833,8 @@ Content-Type: application/json
     "sender": "507f1f77bcf86cd799439012",
     "chat": "507f1f77bcf86cd799439023",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:06:00Z",
-    "updatedAt": "2024-01-15T11:06:00Z"
+    "createdAt": "2025-01-15T11:06:00Z",
+    "updatedAt": "2025-01-15T11:06:00Z"
   }
 }
 ```
@@ -9848,7 +9872,7 @@ socket.on('chat:message:new', (data) => {
   //     _id: '507f1f77bcf86cd799439025',
   //     content: 'Hello from real-time!',
   //     sender: { ... },
-  //     createdAt: '2024-01-15T11:07:00Z'
+  //     createdAt: '2025-01-15T11:07:00Z'
   //   },
   //   chatId: '507f1f77bcf86cd799439023'
   // }
@@ -9969,8 +9993,8 @@ Content-Type: application/json
     "settings": {
       "isActive": true
     },
-    "createdAt": "2024-01-15T11:10:00Z",
-    "updatedAt": "2024-01-15T11:10:00Z"
+    "createdAt": "2025-01-15T11:10:00Z",
+    "updatedAt": "2025-01-15T11:10:00Z"
   }
 }
 ```
@@ -10002,7 +10026,7 @@ Content-Type: application/json
     "data": {
       "id": "1234567890",
       "text": "Hello from MUDBASE!",
-      "created_at": "2024-01-15T11:12:00Z"
+      "created_at": "2025-01-15T11:12:00Z"
     },
     "headers": {
       "content-type": "application/json",
@@ -10011,7 +10035,7 @@ Content-Type: application/json
   },
   "usage": {
     "apiCalls": 1,
-    "timestamp": "2024-01-15T11:12:00Z"
+    "timestamp": "2025-01-15T11:12:00Z"
   }
 }
 ```
@@ -10033,7 +10057,7 @@ Authorization: Bearer {user_token}
     "period": "month",
     "breakdown": [
       {
-        "date": "2024-01-15",
+        "date": "2025-01-15",
         "calls": 45,
         "successful": 43,
         "failed": 2
@@ -10536,7 +10560,7 @@ Content-Type: application/json
   "message": "Address verified successfully",
   "data": {
     "verified": true,
-    "verifiedAt": "2024-01-15T12:00:00Z"
+    "verifiedAt": "2025-01-15T12:00:00Z"
   }
 }
 ```
@@ -10583,7 +10607,7 @@ Authorization: Bearer {user_token}
         "collectedAmount": 0.002,
         "threshold": 0.001,
         "status": "ready",
-        "nextScheduledPayoutDate": "2024-01-17T02:00:00Z"
+        "nextScheduledPayoutDate": "2025-01-17T02:00:00Z"
       }
     ]
   }
@@ -10611,10 +10635,10 @@ Authorization: Bearer {user_token}
         "toAddress": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
         "txHash": "abc123def456...",
         "status": "completed",
-        "scheduledAt": "2024-01-15T02:00:00Z",
-        "processedAt": "2024-01-15T02:05:00Z",
-        "confirmedAt": "2024-01-15T02:45:00Z",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "scheduledAt": "2025-01-15T02:00:00Z",
+        "processedAt": "2025-01-15T02:05:00Z",
+        "confirmedAt": "2025-01-15T02:45:00Z",
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "total": 1,
@@ -10687,7 +10711,7 @@ Authorization: Bearer {user_token}
         "currency": "BTC",
         "netAmount": 0.0009,
         "status": "completed",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "totalEarned": 0.0009
@@ -10898,10 +10922,13 @@ Content-Type: application/json
 
 These endpoints are for project-level authentication and require a projectId.
 
+**🆕 NEW: CAPTCHA Support** - Projects can enable CAPTCHA verification for registration and login to protect against bots. See [CAPTCHA Setup Guide](./CAPTCHA_SETUP_GUIDE.md) for configuration.
+
 #### Registration Flow
 
 ```javascript
 // Step 1: User Registration
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/register
 Content-Type: application/json
 
@@ -10910,7 +10937,8 @@ Content-Type: application/json
   "password": "[USER_PASSWORD]",
   "firstName": "John",
   "lastName": "Doe",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -10945,13 +10973,15 @@ Content-Type: application/json
 }
 
 // Step 3: Login
+// Note: If CAPTCHA is enabled for the project, include "captcha" token from frontend
 POST /api/auth/local/login
 Content-Type: application/json
 
 {
   "email": "john.doe@example.com",
   "password": "[USER_PASSWORD]",
-  "projectId": "507f1f77bcf86cd799439011"
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // Optional: Required if CAPTCHA enabled for project
 }
 
 // Response
@@ -11298,7 +11328,7 @@ Content-Type: application/json
     "name": "Acme Corporation",
     "slug": "acme-corp",
     "members": ["507f1f77bcf86cd799439012"],
-    "createdAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z"
   }
 }
 
@@ -11560,8 +11590,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": true,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -11592,8 +11622,8 @@ Content-Type: application/json
     "balance": "0",
     "isCustomKey": false,
     "isActive": true,
-    "createdAt": "2024-01-15T10:00:00Z",
-    "updatedAt": "2024-01-15T10:00:00Z"
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T10:00:00Z"
   }
 }
 ```
@@ -11617,7 +11647,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": true,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     },
     {
       "_id": "507f1f77bcf86cd799439016",
@@ -11627,7 +11657,7 @@ Authorization: Bearer {user_token}
       "isCustomKey": false,
       "isActive": true,
       "project": "507f1f77bcf86cd799439011",
-      "createdAt": "2024-01-15T10:00:00Z"
+      "createdAt": "2025-01-15T10:00:00Z"
     }
   ]
 }
@@ -11654,7 +11684,7 @@ Authorization: Bearer {user_token}
   },
   "warning": "Keep this private key secure and never share it. Anyone with access to this key can control your wallet.",
   "security": {
-    "accessedAt": "2024-01-15T11:20:00Z",
+    "accessedAt": "2025-01-15T11:20:00Z",
     "accessedBy": "507f1f77bcf86cd799439012"
   }
 }
@@ -11681,7 +11711,7 @@ Authorization: Bearer {user_token}
     "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
     "balance": "0.05",
     "balanceInUSD": 2500.00,
-    "lastSyncedAt": "2024-01-15T10:30:00Z"
+    "lastSyncedAt": "2025-01-15T10:30:00Z"
   }
 }
 ```
@@ -11732,7 +11762,7 @@ Authorization: Bearer {user_token}
     "mainTxStatus": "pending",
     "mainTxHash": null,
     "platformFee": 0.0005,
-    "createdAt": "2024-01-15T10:35:00Z"
+    "createdAt": "2025-01-15T10:35:00Z"
   }
 }
 
@@ -11748,7 +11778,7 @@ Authorization: Bearer {user_token}
     "refundStatus": "confirmed",
     "networkFee": 0.0001,
     "platformFee": 0.0005,
-    "completedAt": "2024-01-15T10:45:00Z"
+    "completedAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -11868,7 +11898,7 @@ Content-Type: application/json
     "provider": "paystack",
     "status": "pending",
     "publicKey": "pk_test_abc123...",
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 
@@ -11970,7 +12000,7 @@ Content-Type: application/json
       }
     ],
     "isActive": true,
-    "createdAt": "2024-01-15T10:40:00Z"
+    "createdAt": "2025-01-15T10:40:00Z"
   }
 }
 ```
@@ -12057,7 +12087,7 @@ Content-Type: application/json
         "name": "Pro Plan"
       },
       "customerEmail": "customer@example.com",
-      "currentPeriodEnd": "2024-02-15T10:45:00Z",
+      "currentPeriodEnd": "2025-02-15T10:45:00Z",
       "billingCycle": "monthly"
     }
   }
@@ -12083,9 +12113,9 @@ GET /api/billing/public/projects/507f1f77bcf86cd799439011/subscription?email=cus
       "currency": "NGN"
     },
     "customerEmail": "customer@example.com",
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
     "billingCycle": "monthly",
-    "createdAt": "2024-01-15T10:45:00Z"
+    "createdAt": "2025-01-15T10:45:00Z"
   }
 }
 ```
@@ -12150,8 +12180,8 @@ Content-Type: application/json
     "_id": "507f1f77bcf86cd799439019",
     "status": "active",
     "cancelAtPeriodEnd": true,
-    "currentPeriodEnd": "2024-02-15T10:45:00Z",
-    "canceledAt": "2024-01-15T11:00:00Z"
+    "currentPeriodEnd": "2025-02-15T10:45:00Z",
+    "canceledAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -12279,7 +12309,7 @@ Content-Type: application/json
         "default": true
       }
     ],
-    "createdAt": "2024-01-15T10:50:00Z"
+    "createdAt": "2025-01-15T10:50:00Z"
   }
 }
 ```
@@ -12310,8 +12340,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": true,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T10:55:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T10:55:00Z"
   }
 }
 ```
@@ -12333,7 +12363,7 @@ Authorization: Bearer {user_token}
       "description": "High-performance laptop",
       "category": "electronics",
       "inStock": true,
-      "createdAt": "2024-01-15T10:55:00Z"
+      "createdAt": "2025-01-15T10:55:00Z"
     }
   ],
   "pagination": {
@@ -12386,8 +12416,8 @@ Content-Type: application/json
     "description": "High-performance laptop",
     "category": "electronics",
     "inStock": false,
-    "createdAt": "2024-01-15T10:55:00Z",
-    "updatedAt": "2024-01-15T11:00:00Z"
+    "createdAt": "2025-01-15T10:55:00Z",
+    "updatedAt": "2025-01-15T11:00:00Z"
   }
 }
 ```
@@ -12440,17 +12470,17 @@ Content-Type: application/json
       {
         "user": "507f1f77bcf86cd799439012",
         "role": "admin",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       },
       {
         "user": "507f1f77bcf86cd799439022",
         "role": "member",
-        "joinedAt": "2024-01-15T11:05:00Z"
+        "joinedAt": "2025-01-15T11:05:00Z"
       }
     ],
     "createdBy": "507f1f77bcf86cd799439012",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:05:00Z"
+    "createdAt": "2025-01-15T11:05:00Z"
   }
 }
 ```
@@ -12478,8 +12508,8 @@ Content-Type: application/json
     "sender": "507f1f77bcf86cd799439012",
     "chat": "507f1f77bcf86cd799439023",
     "project": "507f1f77bcf86cd799439011",
-    "createdAt": "2024-01-15T11:06:00Z",
-    "updatedAt": "2024-01-15T11:06:00Z"
+    "createdAt": "2025-01-15T11:06:00Z",
+    "updatedAt": "2025-01-15T11:06:00Z"
   }
 }
 ```
@@ -12517,7 +12547,7 @@ socket.on('chat:message:new', (data) => {
   //     _id: '507f1f77bcf86cd799439025',
   //     content: 'Hello from real-time!',
   //     sender: { ... },
-  //     createdAt: '2024-01-15T11:07:00Z'
+  //     createdAt: '2025-01-15T11:07:00Z'
   //   },
   //   chatId: '507f1f77bcf86cd799439023'
   // }
@@ -12638,8 +12668,8 @@ Content-Type: application/json
     "settings": {
       "isActive": true
     },
-    "createdAt": "2024-01-15T11:10:00Z",
-    "updatedAt": "2024-01-15T11:10:00Z"
+    "createdAt": "2025-01-15T11:10:00Z",
+    "updatedAt": "2025-01-15T11:10:00Z"
   }
 }
 ```
@@ -12671,7 +12701,7 @@ Content-Type: application/json
     "data": {
       "id": "1234567890",
       "text": "Hello from MUDBASE!",
-      "created_at": "2024-01-15T11:12:00Z"
+      "created_at": "2025-01-15T11:12:00Z"
     },
     "headers": {
       "content-type": "application/json",
@@ -12680,7 +12710,7 @@ Content-Type: application/json
   },
   "usage": {
     "apiCalls": 1,
-    "timestamp": "2024-01-15T11:12:00Z"
+    "timestamp": "2025-01-15T11:12:00Z"
   }
 }
 ```
@@ -12702,7 +12732,7 @@ Authorization: Bearer {user_token}
     "period": "month",
     "breakdown": [
       {
-        "date": "2024-01-15",
+        "date": "2025-01-15",
         "calls": 45,
         "successful": 43,
         "failed": 2
@@ -13205,7 +13235,7 @@ Content-Type: application/json
   "message": "Address verified successfully",
   "data": {
     "verified": true,
-    "verifiedAt": "2024-01-15T12:00:00Z"
+    "verifiedAt": "2025-01-15T12:00:00Z"
   }
 }
 ```
@@ -13252,7 +13282,7 @@ Authorization: Bearer {user_token}
         "collectedAmount": 0.002,
         "threshold": 0.001,
         "status": "ready",
-        "nextScheduledPayoutDate": "2024-01-17T02:00:00Z"
+        "nextScheduledPayoutDate": "2025-01-17T02:00:00Z"
       }
     ]
   }
@@ -13280,10 +13310,10 @@ Authorization: Bearer {user_token}
         "toAddress": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
         "txHash": "abc123def456...",
         "status": "completed",
-        "scheduledAt": "2024-01-15T02:00:00Z",
-        "processedAt": "2024-01-15T02:05:00Z",
-        "confirmedAt": "2024-01-15T02:45:00Z",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "scheduledAt": "2025-01-15T02:00:00Z",
+        "processedAt": "2025-01-15T02:05:00Z",
+        "confirmedAt": "2025-01-15T02:45:00Z",
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "total": 1,
@@ -13356,7 +13386,7 @@ Authorization: Bearer {user_token}
         "currency": "BTC",
         "netAmount": 0.0009,
         "status": "completed",
-        "createdAt": "2024-01-15T02:00:00Z"
+        "createdAt": "2025-01-15T02:00:00Z"
       }
     ],
     "totalEarned": 0.0009
