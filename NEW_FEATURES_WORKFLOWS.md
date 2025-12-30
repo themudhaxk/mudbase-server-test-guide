@@ -1,10 +1,10 @@
-# MUDBASE New Features & Workflows (December 2024)
+# MUDBASE New Features & Workflows (December 2025)
 
-> **📅 Released**: December 2024  
+> **📅 Released**: December 2025  
 > **📚 Supplement to**: `WORKFLOW_SIMULATION.md`  
 > **✨ New Features**: 24+ major enhancements
 
-This document covers all new features added to MUDBASE in December 2024. For core features, see [WORKFLOW_SIMULATION.md](./WORKFLOW_SIMULATION.md).
+This document covers all new features added to MUDBASE in December 2025. For core features, see [WORKFLOW_SIMULATION.md](./WORKFLOW_SIMULATION.md).
 
 ---
 
@@ -12,18 +12,19 @@ This document covers all new features added to MUDBASE in December 2024. For cor
 
 1. [Multi-Role & Custom RBAC (NEW)](#multi-role--custom-rbac-new) ⭐
 2. [Multi-Role Feature - Ready-to-Use System (NEW)](#multi-role-feature---ready-to-use-system-new) ⭐⭐
-3. [Anonymous Authentication](#anonymous-authentication)
-3. [OAuth Account Linking](#oauth-account-linking)
-4. [GDPR Compliance Tools](#gdpr-compliance-tools)
-5. [Stripe Invoicing](#stripe-invoicing)
-6. [Row-Level Security (RLS)](#row-level-security-rls)
-7. [Backup & Restore](#backup--restore)
-8. [Virus Scanning](#virus-scanning)
-9. [Per-File RBAC](#per-file-rbac)
-10. [Real-time Analytics](#real-time-analytics)
-11. [Webhook Transformations](#webhook-transformations)
-12. [Compliance Automation](#compliance-automation)
-13. [OpenTelemetry Tracing](#opentelemetry-tracing)
+3. [Project-Based CAPTCHA Authentication (NEW)](#project-based-captcha-authentication-new) ⭐
+4. [Anonymous Authentication](#anonymous-authentication)
+4. [OAuth Account Linking](#oauth-account-linking)
+5. [GDPR Compliance Tools](#gdpr-compliance-tools)
+6. [Stripe Invoicing](#stripe-invoicing)
+7. [Row-Level Security (RLS)](#row-level-security-rls)
+8. [Backup & Restore](#backup--restore)
+9. [Virus Scanning](#virus-scanning)
+10. [Per-File RBAC](#per-file-rbac)
+11. [Real-time Analytics](#real-time-analytics)
+12. [Webhook Transformations](#webhook-transformations)
+13. [Compliance Automation](#compliance-automation)
+14. [OpenTelemetry Tracing](#opentelemetry-tracing)
 
 ---
 
@@ -136,7 +137,7 @@ Content-Type: application/json
     "isSystem": false,
     "isActive": true,
     "createdBy": "user123",
-    "createdAt": "2024-12-16T10:00:00Z"
+    "createdAt": "2025-12-16T10:00:00Z"
   }
 }
 ```
@@ -312,7 +313,7 @@ Authorization: Bearer {token}
       "lastName": "Johnson",
       "role": "developer",
       "customRole": "support_agent",
-      "lastLogin": "2024-12-16T09:00:00Z"
+      "lastLogin": "2025-12-16T09:00:00Z"
     },
     {
       "_id": "user789",
@@ -321,7 +322,7 @@ Authorization: Bearer {token}
       "lastName": "Chen",
       "role": "developer",
       "customRole": "support_agent",
-      "lastLogin": "2024-12-16T08:30:00Z"
+      "lastLogin": "2025-12-16T08:30:00Z"
     }
   ],
   "total": 2
@@ -930,6 +931,169 @@ PATCH /api/projects/{projectId}/multi-role/roles/{roleSlug}/collections/{collect
 
 ---
 
+## Project-Based CAPTCHA Authentication (NEW)
+
+**Endpoints**: `/api/projects/:projectId` (update), `/api/projects/:projectId/auth/captcha` (get)  
+**Use Case**: Bot protection, spam prevention, enhanced security for authentication endpoints  
+**See Also**: [CAPTCHA Setup Guide](./CAPTCHA_SETUP_GUIDE.md)
+
+### Overview
+
+MUDBASE supports **project-based CAPTCHA verification** using Google reCAPTCHA (v2 or v3). This feature can be enabled or disabled per project, allowing you to:
+
+- ✅ **Protect authentication endpoints** from bots and automated attacks
+- ✅ **Configure per-project** - each project can have its own CAPTCHA settings
+- ✅ **Support both reCAPTCHA v2 and v3** - choose based on your needs
+- ✅ **Set minimum score thresholds** for reCAPTCHA v3
+- ✅ **Toggle on/off** easily from dashboard or API
+
+### Enable CAPTCHA for a Project
+
+```javascript
+PATCH /api/projects/507f1f77bcf86cd799439011
+Authorization: Bearer {adminToken}
+Content-Type: application/json
+
+{
+  "auth": {
+    "captcha": {
+      "enabled": true,
+      "version": "v3",
+      "siteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+      "secretKey": "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuTjHjifI9tT",
+      "minScore": 0.5
+    }
+  }
+}
+
+// Response
+{
+  "message": "Project updated successfully",
+  "project": {
+    "auth": {
+      "captcha": {
+        "enabled": true,
+        "version": "v3",
+        "siteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+        "minScore": 0.5
+      }
+    }
+  }
+}
+```
+
+### Get CAPTCHA Configuration (for Frontend)
+
+```javascript
+GET /api/projects/507f1f77bcf86cd799439011/auth/captcha
+
+// Response (public endpoint, no auth required)
+{
+  "captcha": {
+    "enabled": true,
+    "version": "v3",
+    "siteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+    "minScore": 0.5
+  }
+}
+```
+
+### Register with CAPTCHA
+
+```javascript
+POST /api/auth/local/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "SecurePassword123!",
+  "firstName": "John",
+  "lastName": "Doe",
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // CAPTCHA token from frontend
+}
+
+// Response if CAPTCHA valid
+{
+  "message": "User registered successfully",
+  "user": {...},
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+// Response if CAPTCHA missing (when enabled)
+{
+  "error": "CAPTCHA verification required",
+  "captchaRequired": true,
+  "siteKey": "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+}
+
+// Response if CAPTCHA invalid
+{
+  "error": "CAPTCHA verification failed",
+  "details": ["invalid-input-response"]
+}
+```
+
+### Login with CAPTCHA
+
+```javascript
+POST /api/auth/local/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "SecurePassword123!",
+  "projectId": "507f1f77bcf86cd799439011",
+  "captcha": "03AGdBq24PjFyF8Z..." // CAPTCHA token from frontend
+}
+```
+
+### Disable CAPTCHA
+
+```javascript
+PATCH /api/projects/507f1f77bcf86cd799439011
+Authorization: Bearer {adminToken}
+Content-Type: application/json
+
+{
+  "auth": {
+    "captcha": {
+      "enabled": false
+    }
+  }
+}
+```
+
+### Configuration Options
+
+| Field | Type | Description | Default |
+|-------|------|-------------|---------|
+| `enabled` | Boolean | Enable/disable CAPTCHA for this project | `false` |
+| `version` | String | reCAPTCHA version: `"v2"` or `"v3"` | `"v3"` |
+| `siteKey` | String | Public site key from Google | - |
+| `secretKey` | String | Private secret key from Google | - |
+| `minScore` | Number | Minimum score for v3 (0.0 - 1.0) | `0.5` |
+
+### How It Works
+
+1. **Project Configuration**: Each project can have CAPTCHA enabled/disabled independently
+2. **Middleware Verification**: The `verifyCaptcha` middleware checks project settings before verifying
+3. **Frontend Integration**: Frontend must include reCAPTCHA widget and send token with requests
+4. **Backend Verification**: Backend verifies token with Google's API
+
+### Features
+
+- ✅ Project-level configuration
+- ✅ Supports reCAPTCHA v2 and v3
+- ✅ Configurable minimum score for v3
+- ✅ Automatic skip when disabled
+- ✅ Returns site key for frontend integration
+- ✅ Detailed error messages for debugging
+
+**For complete setup and testing guide, see [CAPTCHA_SETUP_GUIDE.md](./CAPTCHA_SETUP_GUIDE.md)**
+
+---
+
 ## Anonymous Authentication
 
 **Endpoint**: `/api/auth/anonymous`  
@@ -954,7 +1118,7 @@ Content-Type: application/json
     "isAnonymous": true,
     "anonymousId": "anon-abc123",
     "role": "viewer",
-    "createdAt": "2024-12-16T10:00:00Z"
+    "createdAt": "2025-12-16T10:00:00Z"
   }
 }
 ```
@@ -1029,13 +1193,13 @@ Authorization: Bearer {token}
       "provider": "google",
       "providerId": "google-user-id-123",
       "email": "user@gmail.com",
-      "linkedAt": "2024-12-01T10:00:00Z"
+      "linkedAt": "2025-12-01T10:00:00Z"
     },
     {
       "provider": "github",
       "providerId": "github-user-id-456",
       "username": "johndoe",
-      "linkedAt": "2024-12-15T14:30:00Z"
+      "linkedAt": "2025-12-15T14:30:00Z"
     }
   ]
 }
@@ -1096,7 +1260,7 @@ Authorization: Bearer {token}
 
 // Response - Complete JSON export
 {
-  "exportedAt": "2024-12-16T10:00:00Z",
+  "exportedAt": "2025-12-16T10:00:00Z",
   "user": {
     "_id": "507f1f77bcf86cd799439012",
     "email": "user@example.com",
@@ -1104,14 +1268,14 @@ Authorization: Bearer {token}
     "lastName": "Doe",
     "role": "developer",
     "org": "507f1f77bcf86cd799439013",
-    "createdAt": "2024-01-15T08:30:00Z",
-    "lastLogin": "2024-12-16T09:00:00Z"
+    "createdAt": "2025-01-15T08:30:00Z",
+    "lastLogin": "2025-12-16T09:00:00Z"
   },
   "projects": [
     {
       "_id": "507f1f77bcf86cd799439011",
       "name": "My App",
-      "createdAt": "2024-01-20T10:00:00Z"
+      "createdAt": "2025-01-20T10:00:00Z"
     }
   ],
   "wallets": [
@@ -1119,7 +1283,7 @@ Authorization: Bearer {token}
       "currency": "BTC",
       "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
       "balance": "0.005",
-      "createdAt": "2024-02-01T12:00:00Z"
+      "createdAt": "2025-02-01T12:00:00Z"
     }
   ],
   "transactions": [
@@ -1134,8 +1298,8 @@ Authorization: Bearer {token}
   "apiKeys": [
     {
       "name": "Production Key",
-      "createdAt": "2024-03-01T10:00:00Z",
-      "lastUsed": "2024-12-16T08:00:00Z"
+      "createdAt": "2025-03-01T10:00:00Z",
+      "lastUsed": "2025-12-16T08:00:00Z"
       // Note: Actual keys not exposed for security
     }
   ]
@@ -1162,7 +1326,7 @@ Content-Type: application/json
     "apiKeysDeactivated": true,
     "sessionsDeleted": true,
     "accountDisabled": true,
-    "scheduledForDeletion": "2024-12-23T10:00:00Z" // 7-day grace period
+    "scheduledForDeletion": "2025-12-23T10:00:00Z" // 7-day grace period
   }
 }
 ```
@@ -1202,7 +1366,7 @@ Authorization: Bearer {token}
   "invoices": [
     {
       "_id": "507f1f77bcf86cd799439060",
-      "invoiceNumber": "INV-2024-001",
+      "invoiceNumber": "INV-2025-001",
       "stripeInvoiceId": "in_1ABC123",
       "subscription": "507f1f77bcf86cd799439015",
       "project": "507f1f77bcf86cd799439011",
@@ -1227,11 +1391,11 @@ Authorization: Bearer {token}
           "amount": 2900
         }
       ],
-      "dueDate": "2024-12-01T00:00:00Z",
-      "paidAt": "2024-12-01T10:30:00Z",
+      "dueDate": "2025-12-01T00:00:00Z",
+      "paidAt": "2025-12-01T10:30:00Z",
       "hostedInvoiceUrl": "https://invoice.stripe.com/...",
       "invoicePdfUrl": "https://invoice.stripe.com/.../pdf",
-      "createdAt": "2024-12-01T00:00:00Z"
+      "createdAt": "2025-12-01T00:00:00Z"
     }
   ],
   "total": 12,
@@ -1268,10 +1432,10 @@ Authorization: Bearer {token}
 // Response - Accounting-friendly JSON
 {
   "invoice": {
-    "invoiceNumber": "INV-2024-001",
-    "issueDate": "2024-12-01T00:00:00Z",
-    "dueDate": "2024-12-01T00:00:00Z",
-    "paidDate": "2024-12-01T10:30:00Z",
+    "invoiceNumber": "INV-2025-001",
+    "issueDate": "2025-12-01T00:00:00Z",
+    "dueDate": "2025-12-01T00:00:00Z",
+    "paidDate": "2025-12-01T10:30:00Z",
     "customer": {
       "name": "Acme Corp",
       "email": "billing@acme.com",
@@ -1389,8 +1553,8 @@ Content-Type: application/json
     "size": 0,
     "collections": [],
     "createdBy": "507f1f77bcf86cd799439012",
-    "createdAt": "2024-12-16T10:00:00Z",
-    "estimatedCompletion": "2024-12-16T10:05:00Z"
+    "createdAt": "2025-12-16T10:00:00Z",
+    "estimatedCompletion": "2025-12-16T10:05:00Z"
   }
 }
 ```
@@ -1411,15 +1575,15 @@ Authorization: Bearer {token}
       "size": 1048576, // bytes
       "collections": ["products", "users", "orders"],
       "fileCount": 150,
-      "createdAt": "2024-12-16T10:00:00Z",
-      "completedAt": "2024-12-16T10:04:32Z"
+      "createdAt": "2025-12-16T10:00:00Z",
+      "completedAt": "2025-12-16T10:04:32Z"
     },
     {
       "_id": "507f1f77bcf86cd799439071",
       "description": "Automatic daily backup",
       "status": "completed",
       "size": 1122334,
-      "createdAt": "2024-12-15T02:00:00Z"
+      "createdAt": "2025-12-15T02:00:00Z"
     }
   ],
   "total": 5
@@ -1448,8 +1612,8 @@ Content-Type: application/json
     "status": "in_progress",
     "restoreMode": "replace",
     "collectionsToRestore": ["products", "orders"],
-    "startedAt": "2024-12-16T11:00:00Z",
-    "estimatedCompletion": "2024-12-16T11:10:00Z"
+    "startedAt": "2025-12-16T11:00:00Z",
+    "estimatedCompletion": "2025-12-16T11:10:00Z"
   }
 }
 ```
@@ -1466,7 +1630,7 @@ Authorization: Bearer {token}
   "backup": {
     "_id": "507f1f77bcf86cd799439070",
     "size": 1048576,
-    "deletedAt": "2024-12-16T11:30:00Z"
+    "deletedAt": "2025-12-16T11:30:00Z"
   }
 }
 ```
@@ -1529,7 +1693,7 @@ Content-Type: multipart/form-data
       "virusScan": {
         "status": "clean",
         "provider": "clamav",
-        "scannedAt": "2024-12-16T10:00:00Z",
+        "scannedAt": "2025-12-16T10:00:00Z",
         "hash": "sha256:abc123def456..."
       }
     }
@@ -1638,7 +1802,7 @@ Content-Type: application/json
   ],
   "passwordProtected": true,
   "password": "SecurePass123!",
-  "expiresAt": "2024-12-31T23:59:59Z",
+  "expiresAt": "2025-12-31T23:59:59Z",
   "downloadLimit": 10
 }
 
@@ -1659,7 +1823,7 @@ Content-Type: application/json
       }
     ],
     "isPasswordProtected": true,
-    "expiresAt": "2024-12-31T23:59:59Z",
+    "expiresAt": "2025-12-31T23:59:59Z",
     "downloadLimit": 10,
     "downloadCount": 0
   }
@@ -1701,7 +1865,7 @@ Authorization: Bearer {token}
   "downloadLimit": 10,
   "downloadCount": 3,
   "remainingDownloads": 7,
-  "expiresAt": "2024-12-31T23:59:59Z",
+  "expiresAt": "2025-12-31T23:59:59Z",
   "isExpired": false
 }
 ```
@@ -1764,8 +1928,8 @@ Authorization: Bearer {token}
   "projectId": "507f1f77bcf86cd799439011",
   "activeConnections": 42,
   "totalEvents": 15234,
-  "lastActivity": "2024-12-16T10:05:30Z",
-  "timestamp": "2024-12-16T10:05:32Z"
+  "lastActivity": "2025-12-16T10:05:30Z",
+  "timestamp": "2025-12-16T10:05:32Z"
 }
 ```
 
@@ -1780,17 +1944,17 @@ Authorization: Bearer {token}
   "users": [
     {
       "userId": "507f1f77bcf86cd799439012",
-      "connectedAt": "2024-12-16T09:30:00Z",
+      "connectedAt": "2025-12-16T09:30:00Z",
       "socketId": "socket-abc123"
     },
     {
       "userId": "507f1f77bcf86cd799439013",
-      "connectedAt": "2024-12-16T10:00:00Z",
+      "connectedAt": "2025-12-16T10:00:00Z",
       "socketId": "socket-def456"
     }
   ],
   "count": 2,
-  "timestamp": "2024-12-16T10:05:32Z"
+  "timestamp": "2025-12-16T10:05:32Z"
 }
 ```
 
@@ -1814,18 +1978,18 @@ Content-Type: application/json
   "presence": {
     "507f1f77bcf86cd799439012": {
       "online": true,
-      "lastSeen": "2024-12-16T10:05:00Z"
+      "lastSeen": "2025-12-16T10:05:00Z"
     },
     "507f1f77bcf86cd799439013": {
       "online": true,
-      "lastSeen": "2024-12-16T10:04:30Z"
+      "lastSeen": "2025-12-16T10:04:30Z"
     },
     "507f1f77bcf86cd799439014": {
       "online": false,
-      "lastSeen": "2024-12-15T18:30:00Z"
+      "lastSeen": "2025-12-15T18:30:00Z"
     }
   },
-  "timestamp": "2024-12-16T10:05:32Z"
+  "timestamp": "2025-12-16T10:05:32Z"
 }
 ```
 
@@ -1847,7 +2011,7 @@ Authorization: Bearer {token}
     "project_subscribe": 100,
     "project_unsubscribe": 23
   },
-  "timestamp": "2024-12-16T10:05:32Z"
+  "timestamp": "2025-12-16T10:05:32Z"
 }
 ```
 
@@ -1863,23 +2027,23 @@ Authorization: Bearer {token}
   "period": "hour",
   "data": [
     {
-      "timestamp": "2024-12-16T09:00:00Z",
+      "timestamp": "2025-12-16T09:00:00Z",
       "connections": 35,
       "events": 420
     },
     {
-      "timestamp": "2024-12-16T09:01:00Z",
+      "timestamp": "2025-12-16T09:01:00Z",
       "connections": 37,
       "events": 445
     },
     {
-      "timestamp": "2024-12-16T09:02:00Z",
+      "timestamp": "2025-12-16T09:02:00Z",
       "connections": 39,
       "events": 468
     }
     // ... 60 data points (one per minute for past hour)
   ],
-  "generatedAt": "2024-12-16T10:05:32Z"
+  "generatedAt": "2025-12-16T10:05:32Z"
 }
 ```
 
@@ -1991,7 +2155,7 @@ Content-Type: application/json
     "data": {
       "userId": "user123",
       "orderTotal": 150.50,
-      "timestamp": "2024-12-16T10:00:00Z"
+      "timestamp": "2025-12-16T10:00:00Z"
     }
   },
   "transformations": [
@@ -2012,7 +2176,7 @@ Content-Type: application/json
     "data": {
       "userId": "user123",
       "orderTotal": 150.50,
-      "timestamp": "2024-12-16T10:00:00Z"
+      "timestamp": "2025-12-16T10:00:00Z"
     }
   },
   "transformed": {
@@ -2020,7 +2184,7 @@ Content-Type: application/json
     "data": {
       "user_id": "user123",
       "amount": 150.50,
-      "timestamp": "2024-12-16T10:00:00Z"
+      "timestamp": "2025-12-16T10:00:00Z"
     }
   }
 }
@@ -2174,7 +2338,7 @@ Complex transformations using JSON path:
     "userId": "user123",
     "items": [{...}],
     "total": 150.50,
-    "createdAt": "2024-12-16T10:00:00Z"
+    "createdAt": "2025-12-16T10:00:00Z"
   }
 }
 ```
@@ -2188,10 +2352,10 @@ Complex transformations using JSON path:
     "user_id": "user123",
     "items": [{...}],
     "amount": 150.50,
-    "timestamp": "2024-12-16T10:00:00Z"
+    "timestamp": "2025-12-16T10:00:00Z"
   },
   "metadata": {
-    "transformedAt": "2024-12-16T10:00:01Z",
+    "transformedAt": "2025-12-16T10:00:01Z",
     "version": "v2"
   }
 }
@@ -2214,8 +2378,8 @@ Content-Type: application/json
 {
   "orgId": "507f1f77bcf86cd799439013",
   "reviewPeriod": {
-    "start": "2024-10-01T00:00:00Z",
-    "end": "2024-12-31T23:59:59Z"
+    "start": "2025-10-01T00:00:00Z",
+    "end": "2025-12-31T23:59:59Z"
   }
 }
 
@@ -2224,15 +2388,15 @@ Content-Type: application/json
   "report": {
     "orgId": "507f1f77bcf86cd799439013",
     "reviewPeriod": {
-      "start": "2024-10-01T00:00:00Z",
-      "end": "2024-12-31T23:59:59Z"
+      "start": "2025-10-01T00:00:00Z",
+      "end": "2025-12-31T23:59:59Z"
     },
     "users": [
       {
         "userId": "507f1f77bcf86cd799439012",
         "email": "john@acme.com",
         "role": "owner",
-        "lastLogin": "2024-12-16T09:00:00Z",
+        "lastLogin": "2025-12-16T09:00:00Z",
         "mfaEnabled": true,
         "apiKeys": 2,
         "projects": 5
@@ -2241,7 +2405,7 @@ Content-Type: application/json
         "userId": "507f1f77bcf86cd799439013",
         "email": "jane@acme.com",
         "role": "admin",
-        "lastLogin": "2024-12-14T15:30:00Z",
+        "lastLogin": "2025-12-14T15:30:00Z",
         "mfaEnabled": true,
         "apiKeys": 1,
         "projects": 3
@@ -2260,7 +2424,7 @@ Content-Type: application/json
       "Enable MFA for remaining 2 users",
       "Review inactive user accounts"
     ],
-    "generatedAt": "2024-12-16T10:00:00Z"
+    "generatedAt": "2025-12-16T10:00:00Z"
   }
 }
 ```
@@ -2274,14 +2438,14 @@ Content-Type: application/json
 
 {
   "orgId": "507f1f77bcf86cd799439013",
-  "recordDate": "2024-12-16T00:00:00Z"
+  "recordDate": "2025-12-16T00:00:00Z"
 }
 
 // Response
 {
   "record": {
     "orgId": "507f1f77bcf86cd799439013",
-    "recordDate": "2024-12-16T00:00:00Z",
+    "recordDate": "2025-12-16T00:00:00Z",
     "dataController": {
       "name": "Acme Corp",
       "contact": "dpo@acme.com",
@@ -2338,7 +2502,7 @@ Content-Type: application/json
       "Right to object",
       "Right to restrict processing"
     ],
-    "generatedAt": "2024-12-16T10:00:00Z"
+    "generatedAt": "2025-12-16T10:00:00Z"
   }
 }
 ```
@@ -2367,7 +2531,7 @@ Authorization: Bearer {token}
       "backupEnabled": true,
       "incidentResponsePlan": true,
       "mfaEnforced": false,
-      "lastAccessReview": "2024-12-01T00:00:00Z"
+      "lastAccessReview": "2025-12-01T00:00:00Z"
     },
     "security": {
       "passwordPolicy": "strong",
@@ -2379,7 +2543,7 @@ Authorization: Bearer {token}
       "encryptionInTransit": true
     },
     "certifications": [],
-    "lastAudit": "2024-12-01T00:00:00Z",
+    "lastAudit": "2025-12-01T00:00:00Z",
     "nextAudit": "2025-03-01T00:00:00Z",
     "auditStatus": "in_progress"
   }
@@ -2413,7 +2577,7 @@ Content-Type: application/json
     "_id": "507f1f77bcf86cd799439080",
     "eventType": "unauthorized_access_attempt",
     "severity": "high",
-    "timestamp": "2024-12-16T10:00:00Z",
+    "timestamp": "2025-12-16T10:00:00Z",
     "details": {
       "userId": "507f1f77bcf86cd799439012",
       "resource": "admin-panel",
@@ -2520,7 +2684,7 @@ Authorization: Bearer {token}
   "alert": {
     "eventType": "private_key_export",
     "severity": "CRITICAL",
-    "timestamp": "2024-12-16T10:00:00Z",
+    "timestamp": "2025-12-16T10:00:00Z",
     "details": {
       "userId": "507f1f77bcf86cd799439012",
       "walletId": "wallet-abc123",
@@ -2601,6 +2765,7 @@ The tracing system integrates with:
 28. **OpenTelemetry Tracing** - Request tracing
 29. **Security Alerts** - Critical event notifications
 30. **Distributed Tracing** - Performance monitoring
+31. **Project-Based CAPTCHA** - Bot protection per project
 
 ### Platform Improvements
 
@@ -2622,6 +2787,6 @@ For more information, see:
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: December 2025  
 **Platform Status**: Production-ready 🚀
 
