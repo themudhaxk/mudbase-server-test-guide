@@ -675,6 +675,143 @@ Authorization: Bearer {{token}}
 
 ---
 
+## CAPTCHA Bypass Testing
+
+### Test Case 5.1: CAPTCHA Token Reuse (Replay Attack)
+
+**Objective**: Verify CAPTCHA tokens cannot be reused multiple times.
+
+```bash
+# Step 1: Get valid CAPTCHA token from frontend
+# Step 2: Use token for registration
+POST {{baseUrl}}/api/auth/local/register
+{
+  "email": "test1@example.com",
+  "password": "TestPassword123!",
+  "projectId": "{{projectId}}",
+  "captcha": "03AGdBq24PjFyF8Z..." // Valid token
+}
+
+# Expected: 201 Created
+
+# Step 3: Attempt to reuse same token
+POST {{baseUrl}}/api/auth/local/register
+{
+  "email": "test2@example.com",
+  "password": "TestPassword123!",
+  "projectId": "{{projectId}}",
+  "captcha": "03AGdBq24PjFyF8Z..." // Same token
+}
+
+# Expected: 400 Bad Request (CAPTCHA verification failed)
+# ❌ Vulnerability if: 201 Created (token reused successfully)
+```
+
+**Expected Result**: CAPTCHA tokens should be single-use and verified with Google's API each time.
+
+---
+
+### Test Case 5.2: CAPTCHA Bypass (Missing Token)
+
+**Objective**: Verify authentication fails when CAPTCHA is enabled but token is missing.
+
+```bash
+# With CAPTCHA enabled for project
+POST {{baseUrl}}/api/auth/local/register
+{
+  "email": "bypass-test@example.com",
+  "password": "TestPassword123!",
+  "projectId": "{{projectId}}"
+  // No captcha field
+}
+
+# Expected: 400 Bad Request
+# {
+#   "error": "CAPTCHA verification required",
+#   "captchaRequired": true,
+#   "siteKey": "..."
+# }
+# ❌ Vulnerability if: 201 Created (registration succeeds without CAPTCHA)
+```
+
+**Expected Result**: When CAPTCHA is enabled, requests without CAPTCHA tokens should be rejected.
+
+---
+
+### Test Case 5.3: Invalid CAPTCHA Token
+
+**Objective**: Verify invalid/fake CAPTCHA tokens are rejected.
+
+```bash
+POST {{baseUrl}}/api/auth/local/register
+{
+  "email": "invalid-captcha@example.com",
+  "password": "TestPassword123!",
+  "projectId": "{{projectId}}",
+  "captcha": "invalid_token_12345"
+}
+
+# Expected: 400 Bad Request
+# {
+#   "error": "CAPTCHA verification failed",
+#   "details": ["invalid-input-response"]
+# }
+# ❌ Vulnerability if: 201 Created (invalid token accepted)
+```
+
+**Expected Result**: Invalid CAPTCHA tokens should be rejected by Google's API.
+
+---
+
+### Test Case 5.4: CAPTCHA Score Manipulation (reCAPTCHA v3)
+
+**Objective**: Verify low-score CAPTCHA tokens are rejected when minScore threshold is set.
+
+```bash
+# Project configured with minScore: 0.7
+# Attempt registration with low-score token (score < 0.7)
+POST {{baseUrl}}/api/auth/local/register
+{
+  "email": "low-score@example.com",
+  "password": "TestPassword123!",
+  "projectId": "{{projectId}}",
+  "captcha": "03AGdBq24PjFyF8Z..." // Token with score 0.3
+}
+
+# Expected: 400 Bad Request
+# {
+#   "error": "CAPTCHA score too low",
+#   "score": 0.3,
+#   "minScore": 0.7
+# }
+# ❌ Vulnerability if: 201 Created (low score accepted)
+```
+
+**Expected Result**: CAPTCHA tokens with scores below the minimum threshold should be rejected.
+
+---
+
+### Test Case 5.5: CAPTCHA Disabled Bypass
+
+**Objective**: Verify that when CAPTCHA is disabled, it can be bypassed (this is expected behavior).
+
+```bash
+# CAPTCHA disabled for project
+POST {{baseUrl}}/api/auth/local/register
+{
+  "email": "no-captcha@example.com",
+  "password": "TestPassword123!",
+  "projectId": "{{projectId}}"
+  // No captcha field - should work
+}
+
+# Expected: 201 Created (CAPTCHA disabled, bypass is expected)
+```
+
+**Expected Result**: When CAPTCHA is disabled, requests should work without CAPTCHA tokens.
+
+---
+
 ## Authentication & Session Management Testing
 
 ### Test Case 6.1: Token Manipulation
@@ -1024,6 +1161,9 @@ Use this checklist to ensure all security tests are performed:
 - [ ] Session hijacking
 - [ ] Weak password policy
 - [ ] Password reset token security
+- [ ] CAPTCHA bypass attempts
+- [ ] CAPTCHA token reuse (replay attacks)
+- [ ] CAPTCHA score manipulation (v3)
 
 ### Authorization Testing
 - [ ] Bypass collection permissions
